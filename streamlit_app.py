@@ -4,10 +4,10 @@ import pickle
 import datetime as dt
 import pandas as pd
 import json
+from joblib import load
 
 # loading model
-with open("tuned_model.pkl", "rb") as f:
-        model = pickle.load(f)
+model = load("tuned_model.joblib")
 
 # hash function to use secret api key
 def _hash_st_secrets(secrets) -> int:
