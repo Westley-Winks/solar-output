@@ -8,6 +8,6 @@ dependencies:
   - pip:
     - streamlit==1.4.0
     - pandas==1.4.0
-    - joblib=1.1.0
+    - joblib==1.1.0
 
 prefix: /home/dadofapollo/miniconda3/envs/solar-output
