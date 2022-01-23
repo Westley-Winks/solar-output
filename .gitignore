@@ -1,3 +1,6 @@
 .vscode
 .ipynb_checkpoints
 *.pkl
+config.py
+.streamlit
+__pycache__
