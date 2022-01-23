@@ -84,6 +84,10 @@ def convert_acres_to_wattage(acres):
     acres_to_square_feet = acres * 43560 # ft^2
     return acres_to_square_feet*watt_density
 
+def convert_energy_to_dollars(energy):
+    dollars = energy*11.73/100 # https://www.eia.gov/state/print.php?sid=OR
+    return dollars
+
 st.title("Expected Solar Energy Output at the Property")
 
 inputs_df = get_weather_data()
@@ -92,8 +96,17 @@ total_panel_wattage = convert_acres_to_wattage(total_acreage)
 predictions_df = push_through_model(inputs_df, total_panel_wattage)
 total_output = predictions_df.sum()
 miles_for_tesla = convert_energy_to_tesla(total_output) # https://www.carshtuff.com/post/how-much-electricity-does-a-tesla-use
+dollars_of_energy = convert_energy_to_dollars(total_output)
 
-st.subheader(f"Estimated output next week is {total_output:,.0f} kilowatt-hours. Enough to drive an average Tesla {miles_for_tesla:,.1f} miles!")
+st.subheader(f"Estimated output next week is *{total_output:,.0f}* kilowatt-hours")
+st.markdown(
+    f"""
+    Enough energy to:
+    - Drive an average Tesla **{miles_for_tesla:,.1f} miles**
+    - Sell at the average Oregon residential rate for **${dollars_of_energy:,.2f}**
+    """
+)
+
 st.bar_chart(data=predictions_df)
 
 st.markdown(
