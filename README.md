@@ -1,11 +1,11 @@
 # solar-output: Project Overview
 ---
-- Created a tool to estimate energy output of a hypothetical solar facility in Central Oregon to allow land owner to assess feasability of putting solar on his property
+- Created a tool to estimate energy output of a hypothetical solar facility in Central Oregon to allow land owners to assess feasability of putting solar on their property
 - Built a client-facing functional report that automatically generates the energy output predictions for the next 7 days using Streamlit
     - Allows for user input via a slider to change the land acreage used for the hypothetical plant
 - Optimized random forest model using a grid search cross validation algorithm
 
-## Demo
+## [Demo](https://share.streamlit.io/westley-winks/solar-output/main)
 ---
 <iframe
   src="https://share.streamlit.io/westley-winks/solar-output/main"
@@ -31,6 +31,13 @@
     3. Multiple Linear Regression
 - Used mean average error as a metric
 - Used cross validation to avoid overfitting random forest model
+
+## Future Work
+---
+- try other models (boosted trees like XGBoost, Adaboost, etc.)
+- try dropping more unimportant features from random forest model
+- integrate hours of sunlight per day into model
+- increase prediction time from a week to a month or longer (data dependent)
 
 ## References
 ---
