@@ -65,9 +65,9 @@ def get_weather_data():
     return inputs_df
 
 # make predictions using model
-def push_through_model(input, total_panel_wattage=2500):
+def push_through_model(input, total_panel_kilowattage):
     predictions = model.predict(input.drop(["date"], axis=1)) # efficiency
-    predictions = predictions*total_panel_wattage*5/1000 # kWh, 5 hours of sunlight
+    predictions = predictions*total_panel_kilowattage*5 # kWh, 5 hours of sunlight
     return pd.Series(data=predictions, index=input["date"], name="Energy Output (kWh)")
 
 # drop stuff not needed from inputs
@@ -77,30 +77,34 @@ def drop_inputs(df):
 
 # convert final total energy output to something more fun
 def convert_energy_to_tesla(energy):
-    miles = 100*energy/34 # 34 kWh/mile for an average Tesla
+    miles = 100*energy/34 # 34 kWh100 miles for an average Tesla
     return miles
 
 # should be able to put in acres rather than solar panel area/wattage
-def convert_acres_to_wattage(acres):
-    watts_per_panel = 450 # https://www.literoflightusa.org/solar-panel-sizes/
-    area_per_panel = 20.9 # square feet
+def convert_acres_to_kilowattage(acres):
+    watts_per_panel = 250 # https://us.sunpower.com/how-many-solar-panels-do-you-need-panel-size-and-output-factors
+    area_per_panel = 5.4*3.25 # square feet
     watt_density = watts_per_panel/area_per_panel # W/ft^2
     acres_to_square_feet = acres * 43560 # ft^2
-    return acres_to_square_feet*watt_density
+    return acres_to_square_feet*watt_density/1000 # kW
 
 def convert_energy_to_dollars(energy):
-    dollars = energy*11.73/100 # https://www.eia.gov/state/print.php?sid=OR
+    dollars = energy*11.73/100 # https://www.eia.gov/state/print.php?sid=OR, 11.73 cents per kWh
     return dollars
 
 st.title("Expected Solar Energy Output at the Property")
 
 inputs_df = get_weather_data()
-total_acreage = st.slider("How many acres do you want converted to solar?", 10, 280, 100, 10)
-total_panel_wattage = convert_acres_to_wattage(total_acreage)
-predictions_df = push_through_model(inputs_df, total_panel_wattage)
-total_output = predictions_df.sum()
-miles_for_tesla = convert_energy_to_tesla(total_output) # https://www.carshtuff.com/post/how-much-electricity-does-a-tesla-use
+total_acreage = st.slider("How many acres do you want converted to solar?", 1, 100, 50, 10)
+total_panel_kilowattage = convert_acres_to_kilowattage(total_acreage) # kW
+predictions_df = push_through_model(inputs_df, total_panel_kilowattage) # kWh
+total_output = predictions_df.sum() # kWh
+miles_for_tesla = convert_energy_to_tesla(total_output) # mi, https://www.carshtuff.com/post/how-much-electricity-does-a-tesla-use
 dollars_of_energy = convert_energy_to_dollars(total_output)
+
+# Sanity Check: https://diysolarshack.com/how-much-money-1-acre-solar-panels-make-income/
+# One acre of panels produces about 350 MWh (350,000 kWh) per year
+# = 350,000 kWh/year / 365 days/year * 7 days/week = 6732 kWh/week
 
 st.subheader(f"Estimated output next week is *{total_output:,.0f}* kilowatt-hours")
 st.markdown(
@@ -116,14 +120,15 @@ st.bar_chart(data=predictions_df)
 st.markdown(
     """
     Assumptions:
-    - 450 W panels taking up 20.9 square feet each, no space between them
+    - 250 W panels taking up 17.55 square feet each, no space between them
     - 5 hours of sunlight per day
     - Polycrystalline panels
     - Horizontal array
+    - No losses from panel to inverter to grid, etc.
     """
 )
 
-st.markdown("Predictions for daily energy output for next week in Watt-Hours")
+st.markdown("Predictions for daily energy output for next week in kilowatt-hours")
 st.dataframe(predictions_df)
 
 st.markdown("Inputs for the next week (today is the first row):")
