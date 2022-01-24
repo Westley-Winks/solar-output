@@ -77,7 +77,8 @@ def drop_inputs(df):
 
 # convert final total energy output to something more fun
 def convert_energy_to_tesla(energy):
-    return energy/340 # 340 Wh/mile for an average Tesla
+    miles = 100*energy/34 # 34 kWh/mile for an average Tesla
+    return miles
 
 # should be able to put in acres rather than solar panel area/wattage
 def convert_acres_to_wattage(acres):
