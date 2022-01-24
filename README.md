@@ -1,8 +1,8 @@
 # solar-output: Project Overview
 ---
-- Created a tool to estimate energy output of a hypothetical solar facility in Central Oregon
+- Created a tool to estimate energy output of a hypothetical solar facility in Central Oregon to allow land owner to assess feasability of putting solar on his property
 - Built a client-facing functional report that automatically generates the energy output predictions for the next 7 days using Streamlit
-    - Allows for user input via a slider to change the acreage used for the hypothetical plant
+    - Allows for user input via a slider to change the land acreage used for the hypothetical plant
 - Optimized random forest model using a grid search cross validation algorithm
 
 ## Demo
