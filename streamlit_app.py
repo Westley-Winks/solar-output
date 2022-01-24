@@ -6,7 +6,11 @@ import json
 from joblib import load
 
 # loading model
-model = load("tuned_model.joblib")
+@st.cache(allow_output_mutation=True)
+def load_model():
+    return load("tuned_model.joblib")
+
+model = load_model()
 
 # hash function to use secret api key
 def _hash_st_secrets(secrets) -> int:
@@ -18,7 +22,7 @@ def _hash_st_secrets(secrets) -> int:
 	return hash_just_the_secrets
 
 # get weather data from OpenWeatherMap
-@st.cache(hash_funcs={type(st.secrets): _hash_st_secrets})
+@st.cache(hash_funcs={type(st.secrets): _hash_st_secrets}, ttl=12*3600)
 def get_weather_data():
     lat = "44.30"
     lon = "-120.91"

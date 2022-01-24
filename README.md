@@ -8,7 +8,7 @@
 ## Demo
 ---
 <iframe
-  src="https://share.streamlit.io/"
+  src="https://share.streamlit.io/westley-winks/solar-output/main"
   style="width:100%; height:300px;"
 ></iframe>
 
